@@ -1,0 +1,7 @@
+db:
+  host: "localhost"
+  port: 5432
+  sslmode: "disable"
+  dbname: "gogo"
+  user: "gogo"
+  password: "password"

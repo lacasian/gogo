@@ -5,8 +5,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var helloCmd = &cobra.Command{
-	Use:   "hello",
+var runCmd = &cobra.Command{
+	Use:   "run",
 	Short: "Say hello!",
 	Long:  "Address a wonderful greeting to the majestic executioner of this CLI",
 	Run: func(cmd *cobra.Command, args []string) {

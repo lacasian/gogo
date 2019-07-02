@@ -1,9 +1,11 @@
 package commands
 
 import (
-	"os"
+	"fmt"
 	"path/filepath"
 	"strings"
+
+	formatter "github.com/kwix/logrus-module-formatter"
 
 	"github.com/sirupsen/logrus"
 
@@ -11,20 +13,26 @@ import (
 	"github.com/spf13/viper"
 )
 
+var log = logrus.WithField("module", "main")
+
 var (
 	config  string
 	version bool
+	verbose bool
+	logging string
 
-	GogoCmd = &cobra.Command{
+	RootCmd = &cobra.Command{
 		Use:   "gogo",
 		Short: "not doing anything",
 		Long:  "I'm a simple boilerplate. Use me and change me. I'm your whore.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			configLoaded := false
+
 			if config != "" {
 				// get the filepath
 				abs, err := filepath.Abs(config)
 				if err != nil {
-					logrus.Error("Error reading filepath: ", err.Error())
+					log.Error("Error reading filepath: ", err.Error())
 				}
 
 				// get the config name
@@ -36,12 +44,34 @@ var (
 				//
 				viper.SetConfigName(strings.Split(base, ".")[0])
 				viper.AddConfigPath(path)
+			}
 
-				// Find and read the config file; Handle errors reading the config file
-				if err := viper.ReadInConfig(); err != nil {
-					logrus.Fatal("Failed to read config file: ", err.Error())
-					os.Exit(1)
+			viper.AddConfigPath(".")
+
+			// Find and read the config file; Handle errors reading the config file
+			if err := viper.ReadInConfig(); err != nil {
+				log.Info("Could not load config file. Falling back to args. Error: ", err)
+			} else {
+				configLoaded = true
+			}
+
+			if viper.GetString("db.connection-string") == "" && configLoaded {
+				var user, pass string
+				if !viper.IsSet("db.user") {
+					user = viper.GetString("PG_USER")
+				} else {
+					user = viper.GetString("db.user")
 				}
+
+				if !viper.IsSet("db.password") {
+					pass = viper.GetString("PG_PASSWORD")
+				} else {
+					pass = viper.GetString("db.password")
+				}
+
+				p := fmt.Sprintf("host=%s port=%s sslmode=%s dbname=%s user=%s password=%s", viper.GetString("db.host"), viper.GetString("db.port"), viper.GetString("db.sslmode"), viper.GetString("db.dbname"), user, pass)
+
+				viper.Set("db.connection-string", p)
 			}
 		},
 
@@ -53,21 +83,41 @@ var (
 	}
 )
 
-func init() {
+func initLogging() {
+	if verbose && logging == "" {
+		logging = "*=debug"
+	}
 
-	// set config defaults
-	// viper.SetDefault("some-flag", false)
+	if logging == "" {
+		logging = "*=info"
+	}
+
+	f, err := formatter.New(formatter.NewModulesMap(logging))
+	if err != nil {
+		panic(err)
+	}
+
+	logrus.SetFormatter(f)
+
+	log.Debug("Debug mode")
+}
+
+func init() {
+	// bind Viper to env variables
+	viper.BindEnv("PG_USER")
+	viper.BindEnv("PG_PASSWORD")
 
 	// persistent flags
-	GogoCmd.PersistentFlags().StringP("backend", "b", "file://", "Hoarder backend driver")
+	RootCmd.PersistentFlags().StringVar(&config, "config", "", "/path/to/config.yml")
 
-	//
-	viper.BindPFlag("backend", GogoCmd.PersistentFlags().Lookup("backend"))
+	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Display debug messages")
+	RootCmd.PersistentFlags().StringVar(&logging, "logging", "", "Display debug messages")
 
 	// local flags;
-	GogoCmd.Flags().StringVar(&config, "config", "", "/path/to/config.yml")
-	GogoCmd.Flags().BoolVarP(&version, "version", "v", false, "Display the current version of this CLI")
+	RootCmd.Flags().BoolVar(&version, "version", false, "Display the current version of this CLI")
 
 	// commands
-	GogoCmd.AddCommand(helloCmd)
+	RootCmd.AddCommand(runCmd)
+
+	cobra.OnInitialize(initLogging)
 }

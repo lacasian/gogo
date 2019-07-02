@@ -12,9 +12,9 @@ var (
 )
 
 func main() {
-	commands.GogoCmd.Version = buildVersion
+	commands.RootCmd.Version = buildVersion
 
-	if err := commands.GogoCmd.Execute(); err != nil {
+	if err := commands.RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
