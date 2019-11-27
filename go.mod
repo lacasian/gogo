@@ -1,6 +1,8 @@
 module github.com/kwix/gogo
 
 require (
+	github.com/gin-contrib/cors v1.3.0
+	github.com/gin-gonic/gin v1.5.0
 	github.com/kwix/logrus-module-formatter v0.0.0-20190702125859-070a70371a97
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5

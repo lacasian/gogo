@@ -1,7 +1,30 @@
+# api-related fields
+api:
+  # The port on which the API will be exposed (default:3001)
+  port: 3001
+
+  # Enable/disable development CORS
+  dev-cors: true
+
+  # Allowed hosts for HTTP API development CORS
+  dev-cors-host: "*"
+
+# database fields
 db:
-  host: "localhost"
+  # Database host
+  host: "gogo"
+
+  # Database port
   port: 5432
+
+  # Database sslmode
   sslmode: "disable"
+
+  # Database name
   dbname: "gogo"
+
+  # Database user (also allowed via PG_USER env var)
   user: "gogo"
-  password: "password"
+
+# Control what to be logged using format "module=level,module=level"; `*` means all other modules
+logging: "*=info"
