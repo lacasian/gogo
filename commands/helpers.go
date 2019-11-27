@@ -23,7 +23,21 @@ func initLogging() {
 		logging = "*=info"
 	}
 	
-	f, err := formatter.New(formatter.NewModulesMap(logging))
+	gin.SetMode(gin.DebugMode)
+
+	modules := formatter.NewModulesMap(logging)
+	if level, exists := modules["gin"]; exists {
+		if level < logrus.DebugLevel {
+			gin.SetMode(gin.ReleaseMode)
+		}
+	} else {
+		level := modules["*"]
+		if level < logrus.DebugLevel {
+			gin.SetMode(gin.ReleaseMode)
+		}
+	}
+
+	f, err := formatter.New(modules)
 	if err != nil {
 		panic(err)
 	}
