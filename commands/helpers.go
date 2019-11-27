@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	formatter "github.com/kwix/logrus-module-formatter"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

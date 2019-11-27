@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/kwix/gogo/db"
 	"github.com/sirupsen/logrus"
 )
 
@@ -17,11 +18,13 @@ type Config struct {
 type API struct {
 	config Config
 	engine *gin.Engine
+	db     *db.DB
 }
 
-func New(config Config) *API {
+func New(config Config, db *db.DB) *API {
 	return &API{
 		config: config,
+		db:     db,
 	}
 }
 
