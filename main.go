@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kwix/gogo/commands"
+	"github.com/kwix/gogo/cmd"
 )
 
 var (
@@ -12,9 +12,9 @@ var (
 )
 
 func main() {
-	commands.RootCmd.Version = buildVersion
+	cmd.RootCmd.Version = buildVersion
 
-	if err := commands.RootCmd.Execute(); err != nil {
+	if err := cmd.RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
