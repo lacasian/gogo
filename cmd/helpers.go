@@ -3,7 +3,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	formatter "github.com/kwix/logrus-module-formatter"
+
+	formatter "github.com/lacasian/logrus-module-formatter"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -11,19 +12,19 @@ import (
 
 func initLogging() {
 	logging := viper.GetString("logging")
-	
+
 	if verbose {
 		logging = "*=debug"
 	}
-	
+
 	if vverbose {
 		logging = "*=trace"
 	}
-	
+
 	if logging == "" {
 		logging = "*=info"
 	}
-	
+
 	gin.SetMode(gin.DebugMode)
 
 	modules := formatter.NewModulesMap(logging)
@@ -42,9 +43,9 @@ func initLogging() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	logrus.SetFormatter(f)
-	
+
 	log.Debug("Debug mode")
 }
 
@@ -74,9 +75,9 @@ func buildDBConnectionString() {
 		} else {
 			user = viper.GetString("db.user")
 		}
-		
+
 		pass = viper.GetString("PG_PASSWORD")
-		
+
 		p := fmt.Sprintf("host=%s port=%s sslmode=%s dbname=%s user=%s password=%s", viper.GetString("db.host"), viper.GetString("db.port"), viper.GetString("db.sslmode"), viper.GetString("db.dbname"), user, pass)
 		viper.Set("db.connection-string", p)
 	}

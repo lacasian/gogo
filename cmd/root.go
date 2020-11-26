@@ -3,9 +3,9 @@ package cmd
 import (
 	"path/filepath"
 	"strings"
-	
+
 	"github.com/sirupsen/logrus"
-	
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -13,8 +13,8 @@ import (
 var log = logrus.WithField("module", "main")
 
 var (
-	config  string
-	version bool
+	config            string
+	version           bool
 	verbose, vverbose bool
 
 	RootCmd = &cobra.Command{
@@ -46,7 +46,7 @@ var (
 			if err := viper.ReadInConfig(); err != nil {
 				log.Info("Could not load config file. Falling back to args. Error: ", err)
 			}
-			
+
 			initLogging()
 		},
 
@@ -63,19 +63,16 @@ func init() {
 		viper.Set("version", RootCmd.Version)
 	})
 	viper.AutomaticEnv()
-	
+
 	// persistent flags
 	RootCmd.PersistentFlags().StringVar(&config, "config", "", "/path/to/config.yml")
-	
+
 	RootCmd.PersistentFlags().BoolVar(&verbose, "v", false, "Set all logging modules to debug (shorthand for `--logging=*=debug`)")
 	RootCmd.PersistentFlags().BoolVar(&vverbose, "vv", false, "Set all logging modules to trace (shorthand for `--logging=*=trace`)")
-	
+
 	RootCmd.PersistentFlags().String("logging", "", "Display debug messages")
 	viper.BindPFlag("logging", RootCmd.Flag("logging"))
 
 	// local flags;
 	RootCmd.Flags().BoolVar(&version, "version", false, "Display the current version of this CLI")
-
-	// commands
-	RootCmd.AddCommand(runCmd)
 }

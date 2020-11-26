@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kwix/gogo/cmd"
+	"github.com/lacasian/gogo/cmd"
 )
 
 var (
