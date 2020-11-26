@@ -1,11 +1,12 @@
-package commands
+package cmd
 
 import (
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 var runCmd = &cobra.Command{
@@ -19,9 +20,9 @@ var runCmd = &cobra.Command{
 		stopChan := make(chan os.Signal, 1)
 		signal.Notify(stopChan, syscall.SIGINT)
 		signal.Notify(stopChan, syscall.SIGTERM)
-		
+
 		logrus.Warn("At least, we meet for the first time for the last time!")
-		
+
 		select {
 		case <-stopChan:
 			log.Info("Got stop signal. Finishing work.")
@@ -32,5 +33,7 @@ var runCmd = &cobra.Command{
 }
 
 func init() {
+	RootCmd.AddCommand(runCmd)
+
 	addDBFlags(runCmd)
 }
