@@ -15,7 +15,7 @@ type Core struct {
 
 func New(config Config) *Core {
 	return &Core{
-		config:config,
+		config: config,
 	}
 }
 

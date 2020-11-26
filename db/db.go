@@ -3,10 +3,11 @@ package db
 import (
 	"database/sql"
 
-	_ "github.com/kwix/gogo/migrations"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose"
 	"github.com/sirupsen/logrus"
+
+	_ "github.com/lacasian/gogo/migrations"
 )
 
 var log = logrus.WithField("module", "db")

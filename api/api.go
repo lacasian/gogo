@@ -30,7 +30,7 @@ func New(config Config, db *db.DB) *API {
 
 func (a *API) Run() {
 	a.engine = gin.Default()
-	
+
 	if a.config.DevCorsEnabled {
 		a.engine.Use(cors.New(cors.Config{
 			AllowOrigins:     []string{a.config.DevCorsHost},
@@ -40,9 +40,9 @@ func (a *API) Run() {
 			AllowCredentials: true,
 		}))
 	}
-	
+
 	a.setRoutes()
-	
+
 	err := a.engine.Run(":" + a.config.Port)
 	if err != nil {
 		log.Fatal(err)
