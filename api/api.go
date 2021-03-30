@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/kwix/gogo/db"
+	"github.com/lacasian/gogo/db"
 	"github.com/sirupsen/logrus"
 )
 
