@@ -5,6 +5,8 @@ db:
     dbname: simulator
     # Database host
     host: localhost
+    # Database password
+    password: password
     # Database port
     port: "5432"
     # Database sslmode
@@ -12,4 +14,6 @@ db:
     # Database user
     user: core
 # Display debug messages
-logging: '*=info'
+logging: ""
+# Generate the config using the default values. If set to false and a config.yml is loaded, it will take the params from the config
+with-defaults: true

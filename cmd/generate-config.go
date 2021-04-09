@@ -9,13 +9,23 @@ import (
 )
 
 var (
-	ignore = []string{"verbose", "v", "vv", "version", "help", "config", "connection-string", "password"}
+	ignore = []string{"verbose", "v", "vv", "version", "help", "config", "connection-string"}
 )
 var (
 	generateConfigCmd = &cobra.Command{
 		Use:   "generate-config",
 		Short: "generate a sample config file",
 		Long:  "generates a sample config file named config-generated.yml",
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			err := viper.BindPFlags(cmd.Flags())
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			if !viper.GetBool("with-defaults") {
+				RootCmd.PersistentPreRun(cmd, args)
+			}
+		},
 		Run: func(cmd *cobra.Command, args []string) {
 			log.Println("starting config")
 			c := viper.AllSettings()
@@ -37,6 +47,8 @@ var (
 
 func init() {
 	RootCmd.AddCommand(generateConfigCmd)
+
+	generateConfigCmd.Flags().Bool("with-defaults", true, "Generate the config using the default values. If set to false and a config.yml is loaded, it will take the params from the config")
 
 	addDBFlags(generateConfigCmd)
 }
