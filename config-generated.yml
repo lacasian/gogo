@@ -22,5 +22,9 @@ db:
     user: core
 # Display debug messages
 logging: ""
+<<<<<<< HEAD
 # Generate the config using the defaults
+=======
+# Generate the config using the default values. If set to false and a config.yml is loaded, it will take the params from the config
+>>>>>>> origin/master
 with-defaults: true

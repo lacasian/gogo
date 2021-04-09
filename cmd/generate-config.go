@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	ignore = []string{"verbose", "v", "vv", "version", "help", "config", "connection-string"}
+	ignore = []string{"verbose", "v", "vv", "version", "help", "config", "connection-string", "with-defaults"}
 )
 var (
 	generateConfigCmd = &cobra.Command{
@@ -49,8 +49,8 @@ var (
 func init() {
 	RootCmd.AddCommand(generateConfigCmd)
 
+	generateConfigCmd.Flags().Bool("with-defaults", true, "Generate the config using the default values. If set to false and a config.yml is loaded, it will take the params from the config")
+
 	addDBFlags(generateConfigCmd)
 	addAPIFlags(generateConfigCmd)
-
-	generateConfigCmd.Flags().Bool("with-defaults", true, "Generate the config using the default values. If set to false and a config.yml is loaded, it will take the params from the config")
 }
