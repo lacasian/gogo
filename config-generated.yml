@@ -1,0 +1,15 @@
+db:
+    # Auto run database migrations
+    automigrate: true
+    # Database name
+    dbname: simulator
+    # Database host
+    host: localhost
+    # Database port
+    port: "5432"
+    # Database sslmode
+    sslmode: disable
+    # Database user
+    user: core
+# Display debug messages
+logging: '*=info'
