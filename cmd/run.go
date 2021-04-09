@@ -13,9 +13,6 @@ var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Say hello!",
 	Long:  "Address a wonderful greeting to the majestic executioner of this CLI",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		bindViperToDBFlags(cmd)
-	},
 	Run: func(cmd *cobra.Command, args []string) {
 		stopChan := make(chan os.Signal, 1)
 		signal.Notify(stopChan, syscall.SIGINT)

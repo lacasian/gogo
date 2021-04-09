@@ -26,12 +26,7 @@ db:
   # Database user (also allowed via PG_USER env var)
   user: "gogo"
 
-# feature flags
-feature:
-  # Automatic migrations
-  automigrate:
-    # Enable/disable the automatic migrations
-    enabled: true
+  automigrate: true
 
 # Control what to be logged using format "module=level,module=level"; `*` means all other modules
 logging: "*=info"

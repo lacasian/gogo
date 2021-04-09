@@ -1,0 +1,26 @@
+api:
+    # Enable development cors for HTTP API
+    dev-cors: false
+    # Allowed host for HTTP API dev cors
+    dev-cors-host: ""
+    # HTTP API port
+    port: "3001"
+db:
+    # Auto run database migrations
+    automigrate: true
+    # Database name
+    dbname: simulator
+    # Database host
+    host: localhost
+    # Database password
+    password: password
+    # Database port
+    port: "5432"
+    # Database sslmode
+    sslmode: disable
+    # Database user
+    user: core
+# Display debug messages
+logging: ""
+# Generate the config using the defaults
+with-defaults: true

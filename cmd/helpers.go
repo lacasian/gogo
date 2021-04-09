@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-
 	formatter "github.com/lacasian/logrus-module-formatter"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 func initLogging() {
@@ -25,6 +25,7 @@ func initLogging() {
 	if logging == "" {
 		logging = "*=info"
 	}
+	viper.Set("logging", logging)
 
 	gin.SetMode(gin.DebugMode)
 
@@ -50,36 +51,38 @@ func initLogging() {
 	log.Debug("Debug mode")
 }
 
-func addDBFlags(cmd *cobra.Command) {
-	cmd.Flags().String("db.connection-string", "", "Postgres connection string.")
-	cmd.Flags().String("db.host", "localhost", "Database host")
-	cmd.Flags().String("db.port", "5432", "Database port")
-	cmd.Flags().String("db.sslmode", "disable", "Database sslmode")
-	cmd.Flags().String("db.dbname", "coriolis", "Database name")
-	cmd.Flags().String("db.user", "", "Database user (also allowed via PG_USER env)")
-}
-
-func bindViperToDBFlags(cmd *cobra.Command) {
-	viper.BindPFlag("db.connection-string", cmd.Flag("db.connection-string"))
-	viper.BindPFlag("db.host", cmd.Flag("db.host"))
-	viper.BindPFlag("db.port", cmd.Flag("db.port"))
-	viper.BindPFlag("db.sslmode", cmd.Flag("db.sslmode"))
-	viper.BindPFlag("db.dbname", cmd.Flag("db.dbname"))
-	viper.BindPFlag("db.user", cmd.Flag("db.user"))
-}
-
 func buildDBConnectionString() {
 	if viper.GetString("db.connection-string") == "" {
-		var user, pass string
-		if !viper.IsSet("db.user") {
-			user = viper.GetString("PG_USER")
-		} else {
-			user = viper.GetString("db.user")
-		}
-
-		pass = viper.GetString("PG_PASSWORD")
+		user := viper.GetString("db.user")
+		pass := viper.GetString("db.password")
 
 		p := fmt.Sprintf("host=%s port=%s sslmode=%s dbname=%s user=%s password=%s", viper.GetString("db.host"), viper.GetString("db.port"), viper.GetString("db.sslmode"), viper.GetString("db.dbname"), user, pass)
 		viper.Set("db.connection-string", p)
 	}
+}
+
+func mustGetSubconfig(v *viper.Viper, key string, out interface{}) {
+	err := unmarshalSubconfig(v, key, out)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func unmarshalSubconfig(v *viper.Viper, key string, out interface{}) error {
+	vc := subtree(v, key)
+	if vc == nil {
+		return errors.Errorf("key '%s' not found", key)
+	}
+	err := vc.Unmarshal(out)
+	return err
+}
+
+func subtree(v *viper.Viper, name string) *viper.Viper {
+	r := viper.New()
+	for _, key := range v.AllKeys() {
+		if strings.Index(key, name+".") == 0 {
+			r.Set(key[len(name)+1:], v.Get(key))
+		}
+	}
+	return r
 }
