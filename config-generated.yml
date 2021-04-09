@@ -15,5 +15,3 @@ db:
     user: core
 # Display debug messages
 logging: ""
-# Generate the config using the default values. If set to false and a config.yml is loaded, it will take the params from the config
-with-defaults: true

@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	ignore = []string{"verbose", "v", "vv", "version", "help", "config", "connection-string"}
+	ignore = []string{"verbose", "v", "vv", "version", "help", "config", "connection-string", "with-defaults"}
 )
 var (
 	generateConfigCmd = &cobra.Command{
